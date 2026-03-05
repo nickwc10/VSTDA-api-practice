@@ -32,6 +32,14 @@ app.get('/api/TodoItems', (req, res) => {
     res.status(200).json(mock);
 });
 
+app.get('/api/TodoItems/completed', (req, res) => {
+    res.status(200).json(mock.filter(i => i.completed));
+});
+
+app.get('/api/TodoItems/incomplete', (req, res) => {
+    res.status(200).json(mock.filter(i => !i.completed));
+});
+
 app.get('/api/TodoItems/:number', (req, res) => {
     const item = mock.find(i => i.todoItemId === parseInt(req.params.number));
     if (item) {
@@ -57,7 +65,16 @@ app.delete('/api/TodoItems/:number', (req, res) => {
         res.status(404).json({ error: 'Item not found' });
     }
 });
-
+app.patch('/api/TodoItems/', (req, res) => {
+    const updatedItem = req.body;
+    const index = mock.findIndex(i => i.todoItemId === updatedItem.todoItemId);
+    if (index>=0) {
+        mock[index] = updatedItem;
+        res.status(200).json(updatedItem);
+    } else {
+        res.status(404).json({ error: 'Item not found' });
+    }
+});
 app.get('/', (req, res) => {
     res.json({ status: 200,body:`{status:ok}` });
 });
